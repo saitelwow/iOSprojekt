@@ -33,12 +33,13 @@ class TaskViewController: UIViewController {
 //            return
 //        }
 //        let newCount = count - 1
+//
+//
+//        for i in (currentPosition! + 1)...(count + 1){
+//            UserDefaults().setValue(UserDefaults().value(forKey: "task_\(i + 1)"), forKey: "task_\(i)")
+//            UserDefaults().setValue(UserDefaults().value(forKey: "descTask_\(i + 1)"), forKey: "descTask_\(i)")
+//        }
 //        UserDefaults().setValue(newCount, forKey: "count")
-//
-//        //currentPosition = indexPath.row
-//        //current positions => pozycja aktualnego przepisu
-//        UserDefaults().setValue(nil, forKey: "task_\(currentPosition)")
-//
 //        update?()
 //
 //        navigationController?.popViewController(animated: true)
