@@ -6,11 +6,16 @@
 //
 
 import UIKit
+import CoreMotion
 
 class ViewController: UIViewController {
 
     @IBOutlet var table_view: UITableView!
     
+    let motionManager = CMMotionManager()
+    let shakeThreshold: Double = 1.5
+    let yourList = ["Element 1", "Element 2", "Element 3", "Element 4", "Element 5"]
+
     var tytulyPrzepisow = [String]()
     var przepisyOpisy = [String]()
     
@@ -21,16 +26,75 @@ class ViewController: UIViewController {
         table_view.delegate = self
         table_view.dataSource = self
         
-        
-        
         if !UserDefaults().bool(forKey: "setup"){
             UserDefaults().set(true, forKey: "setup")
             UserDefaults().set(0, forKey: "count")
         }
         
         updateTasks()
-        // Do any additional setup after loading the view.
+        
+        motionManager.accelerometerUpdateInterval = 0.1 // Update interval in seconds, adjust as needed
+        
+        if motionManager.isAccelerometerAvailable {
+            motionManager.startAccelerometerUpdates(to: .main) { (data, error) in
+                if let acceleration = data?.acceleration {
+                    let accelerationMagnitude = sqrt(pow(acceleration.x, 2) + pow(acceleration.y, 2) + pow(acceleration.z, 2))
+                    
+                    print("Shake się udał! \(accelerationMagnitude)")
+                    
+                    if accelerationMagnitude > self.shakeThreshold {
+                        let randomIndex = Int.random(in: 0..<self.tytulyPrzepisow.count)
+                        
+                        print("Random recipe: \(self.tytulyPrzepisow[randomIndex])")
+                        
+                        // Navigate to the TaskViewController for the randomly selected recipe
+                        let vc = self.storyboard?.instantiateViewController(identifier: "task") as! TaskViewController
+                        vc.title = "Przepis"
+                        vc.task = self.tytulyPrzepisow[randomIndex]
+                        vc.desc = self.przepisyOpisy[randomIndex]
+                        vc.currentPosition = randomIndex
+                        vc.update = {
+                            DispatchQueue.main.async {
+                                self.updateTasks()
+                            }
+                        }
+                        self.navigationController?.pushViewController(vc, animated: true)
+
+                    }
+                }
+            }
+        }
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        if motionManager.isAccelerometerActive {
+            motionManager.stopAccelerometerUpdates()
+        }
+    }
+    
+    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        if motion == .motionShake {
+            let randomIndex = Int.random(in: 0..<tytulyPrzepisow.count)
+            
+            print("Random recipe: \(tytulyPrzepisow[randomIndex])")
+            
+            // Navigate to the TaskViewController for the randomly selected recipe
+            let vc = storyboard?.instantiateViewController(identifier: "task") as! TaskViewController
+            vc.title = "Przepis"
+            vc.task = tytulyPrzepisow[randomIndex]
+            vc.desc = przepisyOpisy[randomIndex]
+            vc.currentPosition = randomIndex
+            vc.update = {
+                DispatchQueue.main.async {
+                    self.updateTasks()
+                }
+            }
+            navigationController?.pushViewController(vc, animated: true)
+        }
+    }
+    
     func updateTasks(){
         tytulyPrzepisow.removeAll()
         przepisyOpisy.removeAll()
@@ -65,7 +129,6 @@ class ViewController: UIViewController {
 extension ViewController: UITableViewDelegate{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         table_view.deselectRow(at: indexPath, animated: true)
-        
         
         let vc = storyboard?.instantiateViewController(identifier: "task") as! TaskViewController
         vc.title = "Przepis"

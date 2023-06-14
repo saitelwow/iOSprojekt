@@ -26,25 +26,25 @@ class TaskViewController: UIViewController {
         label.text = task
         descField.text = desc
         
-        //navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Usuń", style: .done, target: self, action: #selector(DeleteTask))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Usuń", style: .done, target: self, action: #selector(DeleteTask))
     }
-//    @objc func DeleteTask(){
-//        guard let count = UserDefaults().value(forKey: "count") as? Int else{
-//            return
-//        }
-//        let newCount = count - 1
-//
-//
-//        for i in (currentPosition! + 1)...(count + 1){
-//            UserDefaults().setValue(UserDefaults().value(forKey: "task_\(i + 1)"), forKey: "task_\(i)")
-//            UserDefaults().setValue(UserDefaults().value(forKey: "descTask_\(i + 1)"), forKey: "descTask_\(i)")
-//        }
-//        UserDefaults().setValue(newCount, forKey: "count")
-//        update?()
-//
-//        navigationController?.popViewController(animated: true)
-//
-//    }
+    @objc func DeleteTask(){
+        guard let count = UserDefaults().value(forKey: "count") as? Int else{
+            return
+        }
+        let newCount = count - 1
+
+
+        for i in (currentPosition! + 1)...(count + 1){
+            UserDefaults().setValue(UserDefaults().value(forKey: "task_\(i + 1)"), forKey: "task_\(i)")
+            UserDefaults().setValue(UserDefaults().value(forKey: "descTask_\(i + 1)"), forKey: "descTask_\(i)")
+        }
+        UserDefaults().setValue(newCount, forKey: "count")
+        update?()
+
+        navigationController?.popViewController(animated: true)
+
+    }
 
 
 }
