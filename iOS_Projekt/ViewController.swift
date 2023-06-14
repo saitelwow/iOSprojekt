@@ -14,7 +14,6 @@ class ViewController: UIViewController {
     
     let motionManager = CMMotionManager()
     let shakeThreshold: Double = 1.5
-    let yourList = ["Element 1", "Element 2", "Element 3", "Element 4", "Element 5"]
 
     var tytulyPrzepisow = [String]()
     var przepisyOpisy = [String]()
