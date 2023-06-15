@@ -14,6 +14,8 @@ class ViewController: UIViewController {
     
     let motionManager = CMMotionManager()
     let shakeThreshold: Double = 1.5
+    
+    var isDarkModeEnabled: Bool = false
 
     var tytulyPrzepisow = [String]()
     var przepisyOpisy = [String]()
@@ -122,7 +124,19 @@ class ViewController: UIViewController {
         }
         navigationController?.pushViewController(vc, animated: true)
     }
-
+    
+    @IBAction func toggleMode(_ sender: Any) {
+        print("Moon clicked!")
+        isDarkModeEnabled = !isDarkModeEnabled
+        let window = UIApplication.shared.windows[0]
+        
+        if isDarkModeEnabled == true {
+            window.overrideUserInterfaceStyle = .dark
+        }
+        else {
+            window.overrideUserInterfaceStyle = .light
+        }
+    }
 }
 
 extension ViewController: UITableViewDelegate{
