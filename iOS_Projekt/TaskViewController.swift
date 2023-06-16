@@ -6,45 +6,38 @@
 //
 
 import UIKit
+import CoreData
 
 class TaskViewController: UIViewController {
-
-    @IBOutlet var label:UILabel!
-    @IBOutlet var descField:UITextView!
     
-    var task:String?
-    var desc:String?
-    var currentPosition:Int?
+    @IBOutlet var label: UILabel!
+    @IBOutlet var descField: UITextView!
+    @IBOutlet var imageView: UIImageView!
+    
+    var recipe: Recipe!
+    var currentPosition: Int?
     
     var update: (()->Void)?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
         
-        label.text = task
-        descField.text = desc
+        label.text = recipe.name
+        descField.text = recipe.desc
+        if let img = recipe.image {
+            imageView.image = UIImage(data: img)
+        }
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Usuń", style: .done, target: self, action: #selector(DeleteTask))
     }
-    @objc func DeleteTask(){
-        guard let count = UserDefaults().value(forKey: "count") as? Int else{
+    
+    @objc func DeleteTask() {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return
         }
-        let newCount = count - 1
-
-
-        for i in (currentPosition! + 1)...(count + 1){
-            UserDefaults().setValue(UserDefaults().value(forKey: "task_\(i + 1)"), forKey: "task_\(i)")
-            UserDefaults().setValue(UserDefaults().value(forKey: "descTask_\(i + 1)"), forKey: "descTask_\(i)")
-        }
-        UserDefaults().setValue(newCount, forKey: "count")
+        appDelegate.dataManager.delete(recipe)
+        
         update?()
-
         navigationController?.popViewController(animated: true)
-
     }
-
-
 }

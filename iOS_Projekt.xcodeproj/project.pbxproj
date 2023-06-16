@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		84D43C332A3CD87F005129DD /* ImagePickerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D43C322A3CD87F005129DD /* ImagePickerManager.swift */; };
+		84D43C362A3CE457005129DD /* RecipeList.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 84D43C342A3CE457005129DD /* RecipeList.xcdatamodeld */; };
+		84D43C3E2A3CFE31005129DD /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D43C3D2A3CFE31005129DD /* DataManager.swift */; };
+		84D43C4A2A3D21A9005129DD /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 84D43C492A3D21A9005129DD /* .gitignore */; };
 		B47697532A29697B00A82BC1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B47697522A29697B00A82BC1 /* AppDelegate.swift */; };
 		B47697552A29697B00A82BC1 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B47697542A29697B00A82BC1 /* SceneDelegate.swift */; };
 		B47697572A29697B00A82BC1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B47697562A29697B00A82BC1 /* ViewController.swift */; };
@@ -18,6 +22,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		84D43C322A3CD87F005129DD /* ImagePickerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerManager.swift; sourceTree = "<group>"; };
+		84D43C352A3CE457005129DD /* RecipeList.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RecipeList.xcdatamodel; sourceTree = "<group>"; };
+		84D43C3D2A3CFE31005129DD /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
+		84D43C492A3D21A9005129DD /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		B476974F2A29697B00A82BC1 /* iOS_Projekt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOS_Projekt.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B47697522A29697B00A82BC1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B47697542A29697B00A82BC1 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -44,6 +52,7 @@
 		B47697462A29697B00A82BC1 = {
 			isa = PBXGroup;
 			children = (
+				84D43C492A3D21A9005129DD /* .gitignore */,
 				B47697512A29697B00A82BC1 /* iOS_Projekt */,
 				B47697502A29697B00A82BC1 /* Products */,
 			);
@@ -60,6 +69,7 @@
 		B47697512A29697B00A82BC1 /* iOS_Projekt */ = {
 			isa = PBXGroup;
 			children = (
+				84D43C322A3CD87F005129DD /* ImagePickerManager.swift */,
 				B47697522A29697B00A82BC1 /* AppDelegate.swift */,
 				B47697542A29697B00A82BC1 /* SceneDelegate.swift */,
 				B47697562A29697B00A82BC1 /* ViewController.swift */,
@@ -69,6 +79,8 @@
 				B47697602A29697E00A82BC1 /* Info.plist */,
 				B47697662A296F2500A82BC1 /* EntryViewController.swift */,
 				B47697682A296F4700A82BC1 /* TaskViewController.swift */,
+				84D43C342A3CE457005129DD /* RecipeList.xcdatamodeld */,
+				84D43C3D2A3CFE31005129DD /* DataManager.swift */,
 			);
 			path = iOS_Projekt;
 			sourceTree = "<group>";
@@ -131,6 +143,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84D43C4A2A3D21A9005129DD /* .gitignore in Resources */,
 				B476975F2A29697E00A82BC1 /* LaunchScreen.storyboard in Resources */,
 				B476975C2A29697E00A82BC1 /* Assets.xcassets in Resources */,
 				B476975A2A29697B00A82BC1 /* Main.storyboard in Resources */,
@@ -145,10 +158,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				B47697572A29697B00A82BC1 /* ViewController.swift in Sources */,
+				84D43C3E2A3CFE31005129DD /* DataManager.swift in Sources */,
 				B47697672A296F2500A82BC1 /* EntryViewController.swift in Sources */,
+				84D43C362A3CE457005129DD /* RecipeList.xcdatamodeld in Sources */,
 				B47697692A296F4700A82BC1 /* TaskViewController.swift in Sources */,
 				B47697532A29697B00A82BC1 /* AppDelegate.swift in Sources */,
 				B47697552A29697B00A82BC1 /* SceneDelegate.swift in Sources */,
+				84D43C332A3CD87F005129DD /* ImagePickerManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -298,6 +314,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iOS_Projekt/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to the camera.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app requires access to the photo library.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -326,6 +344,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iOS_Projekt/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to the camera.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app requires access to the photo library.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -366,6 +386,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		84D43C342A3CE457005129DD /* RecipeList.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				84D43C352A3CE457005129DD /* RecipeList.xcdatamodel */,
+			);
+			currentVersion = 84D43C352A3CE457005129DD /* RecipeList.xcdatamodel */;
+			path = RecipeList.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = B47697472A29697B00A82BC1 /* Project object */;
 }

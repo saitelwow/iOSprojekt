@@ -7,34 +7,30 @@
 
 import UIKit
 import CoreMotion
+import CoreData
 
 class ViewController: UIViewController {
-
+    
     @IBOutlet var table_view: UITableView!
     
     let motionManager = CMMotionManager()
     let shakeThreshold: Double = 1.5
     
     var isDarkModeEnabled: Bool = false
-
-    var tytulyPrzepisow = [String]()
-    var przepisyOpisy = [String]()
+    
+    var recipes: [Recipe] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         self.title = "Przepisy"
         
         table_view.delegate = self
         table_view.dataSource = self
         
-        if !UserDefaults().bool(forKey: "setup"){
-            UserDefaults().set(true, forKey: "setup")
-            UserDefaults().set(0, forKey: "count")
-        }
+        setDarkMode(isDarkMode: UserDefaults().bool(forKey: "darkMode"))
         
-        updateTasks()
-        
-        motionManager.accelerometerUpdateInterval = 0.1 // Update interval in seconds, adjust as needed
+        motionManager.accelerometerUpdateInterval = 0.1 // Update interval in seconds
         
         if motionManager.isAccelerometerAvailable {
             motionManager.startAccelerometerUpdates(to: .main) { (data, error) in
@@ -44,32 +40,27 @@ class ViewController: UIViewController {
                     print("Shake się udał! \(accelerationMagnitude)")
                     
                     if accelerationMagnitude > self.shakeThreshold {
-                        let randomIndex = Int.random(in: 0..<self.tytulyPrzepisow.count)
-                        
-                        print("Random recipe: \(self.tytulyPrzepisow[randomIndex])")
-                        
-                        // Navigate to the TaskViewController for the randomly selected recipe
-                        let vc = self.storyboard?.instantiateViewController(identifier: "task") as! TaskViewController
-                        vc.title = "Przepis"
-                        vc.task = self.tytulyPrzepisow[randomIndex]
-                        vc.desc = self.przepisyOpisy[randomIndex]
-                        vc.currentPosition = randomIndex
-                        vc.update = {
-                            DispatchQueue.main.async {
-                                self.updateTasks()
-                            }
-                        }
-                        self.navigationController?.pushViewController(vc, animated: true)
-
+                        self.openRandomRecipe();
                     }
                 }
             }
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            return
+        }
+        
+        recipes = appDelegate.dataManager.fetch(Recipe.fetchRequest())
+        updateView()
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-
+        
         if motionManager.isAccelerometerActive {
             motionManager.stopAccelerometerUpdates()
         }
@@ -77,93 +68,74 @@ class ViewController: UIViewController {
     
     override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
         if motion == .motionShake {
-            let randomIndex = Int.random(in: 0..<tytulyPrzepisow.count)
-            
-            print("Random recipe: \(tytulyPrzepisow[randomIndex])")
-            
-            // Navigate to the TaskViewController for the randomly selected recipe
-            let vc = storyboard?.instantiateViewController(identifier: "task") as! TaskViewController
-            vc.title = "Przepis"
-            vc.task = tytulyPrzepisow[randomIndex]
-            vc.desc = przepisyOpisy[randomIndex]
-            vc.currentPosition = randomIndex
-            vc.update = {
-                DispatchQueue.main.async {
-                    self.updateTasks()
-                }
-            }
-            navigationController?.pushViewController(vc, animated: true)
+            openRandomRecipe()
         }
     }
     
-    func updateTasks(){
-        tytulyPrzepisow.removeAll()
-        przepisyOpisy.removeAll()
-        guard let count = UserDefaults().value(forKey: "count") as? Int else{
-            return
-        }
-        for i in 0..<count{
-            if let task = UserDefaults().value(forKey: "task_\(i+1)") as?String {
-                tytulyPrzepisow.append(task)
+    func openRandomRecipe() {
+        let randomIndex = Int.random(in: 0..<self.recipes.count)
+        let recipe = self.recipes[randomIndex]
+        print("Random recipe: \(recipe.name ?? "null")")
+        viewRecipe(recipe: recipe, index: randomIndex)
+    }
+    
+    func viewRecipe(recipe: Recipe, index: Int) {
+        let vc = self.storyboard?.instantiateViewController(identifier: "task") as! TaskViewController
+        vc.title = "Przepis"
+        vc.recipe = recipe
+        vc.currentPosition = index
+        vc.update = {
+            DispatchQueue.main.async {
+                self.updateView()
             }
-            if let descTask = UserDefaults().value(forKey: "descTask_\(i+1)") as? String{
-                przepisyOpisy.append(descTask)
-            }
         }
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func updateView() {
         table_view.reloadData()
     }
     
-    @IBAction func didTapAdd(){
+    @IBAction func didTapAdd() {
         let vc = storyboard?.instantiateViewController(identifier: "entry") as! EntryViewController
         vc.title = "Nowy przepis"
-        
         vc.update = {
             DispatchQueue.main.async{
-                self.updateTasks()
+                self.updateView()
             }
         }
         navigationController?.pushViewController(vc, animated: true)
     }
     
     @IBAction func toggleMode(_ sender: Any) {
-        print("Moon clicked!")
-        isDarkModeEnabled = !isDarkModeEnabled
+        setDarkMode(isDarkMode: !isDarkModeEnabled)
+    }
+    
+    func setDarkMode(isDarkMode: Bool) {
+        print("darkMode: \(isDarkMode)")
         let window = UIApplication.shared.windows[0]
-        
-        if isDarkModeEnabled == true {
-            window.overrideUserInterfaceStyle = .dark
-        }
-        else {
-            window.overrideUserInterfaceStyle = .light
-        }
+        isDarkModeEnabled = isDarkMode
+        window.overrideUserInterfaceStyle = isDarkMode ? .dark : .light
+        UserDefaults().setValue(isDarkModeEnabled, forKey: "darkMode")
     }
 }
 
-extension ViewController: UITableViewDelegate{
+extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         table_view.deselectRow(at: indexPath, animated: true)
-        
-        let vc = storyboard?.instantiateViewController(identifier: "task") as! TaskViewController
-        vc.title = "Przepis"
-        vc.task = tytulyPrzepisow[indexPath.row]
-        vc.desc = przepisyOpisy[indexPath.row]
-        vc.currentPosition = indexPath.row
-        vc.update = {
-            DispatchQueue.main.async{
-                self.updateTasks()
-            }
-        }
-        navigationController?.pushViewController(vc, animated: true)
+        viewRecipe(recipe: recipes[indexPath.row], index: indexPath.row)
     }
 }
-extension ViewController: UITableViewDataSource{
+
+extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tytulyPrzepisow.count
+        return recipes.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = table_view.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = tytulyPrzepisow[indexPath.row]
+        cell.textLabel?.text = recipes[indexPath.row].name
+        cell.accessoryType = .disclosureIndicator
         return cell
     }
 }

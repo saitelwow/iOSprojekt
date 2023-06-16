@@ -6,12 +6,15 @@
 //
 
 import UIKit
+import CoreData
 
-class EntryViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate {
-
-    @IBOutlet var field:UITextField!
-    @IBOutlet var descField:UITextView!
+class EntryViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     
+    @IBOutlet var field: UITextField!
+    @IBOutlet var descField: UITextView!
+    @IBOutlet var imageView: UIImageView!
+    
+    var imagePicker = UIImagePickerController()
     
     var update: (()->Void)?
     
@@ -20,30 +23,43 @@ class EntryViewController: UIViewController, UITextFieldDelegate, UITextViewDele
         field.delegate = self
         descField.delegate = self
         
+        let imageTap = UITapGestureRecognizer(target: self, action: #selector(imageTapped(tapGestureRecognizer:)))
+        imageView.isUserInteractionEnabled = true
+        imageView.addGestureRecognizer(imageTap)
+        
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Zapisz", style: .done, target: self, action: #selector(saveTask))
-        // Do any additional setup after loading the view.
     }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         saveTask()
         return true
     }
-    @objc func saveTask(){
-        guard let text = field.text, !text.isEmpty else {
+    
+    @objc func saveTask() {
+        guard let name = field.text, !name.isEmpty else {
             return
         }
-        guard let descText = descField.text, !descText.isEmpty else{
+        guard let desc = descField.text, !desc.isEmpty else {
             return
         }
-        guard let count = UserDefaults().value(forKey: "count") as? Int else{
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return
         }
-        let newCount = count + 1
-        UserDefaults().set(newCount, forKey: "count")
-        UserDefaults().set(text, forKey: "task_\(newCount)")
-        UserDefaults().set(descText, forKey: "descTask_\(newCount)")
+        
+        let recipe = Recipe(entity: Recipe.entity(), insertInto: appDelegate.dataManager.context)
+        recipe.name = name
+        recipe.desc = desc
+        recipe.image = imageView.image?.pngData()
+        appDelegate.dataManager.saveContext()
+        
         update?()
-            
         navigationController?.popViewController(animated: true)
     }
-
+    
+    @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
+        //let tappedImage = tapGestureRecognizer.view as! UIImageView
+        ImagePickerManager().pickImage(self) { image in
+            self.imageView.image = image
+        }
+    }
 }
