@@ -12,6 +12,8 @@ import CoreData
 class ViewController: UIViewController {
     
     @IBOutlet var table_view: UITableView!
+
+    @IBOutlet var searchTextField: UITextField!
     
     let motionManager = CMMotionManager()
     let shakeThreshold: Double = 1.5
@@ -19,12 +21,14 @@ class ViewController: UIViewController {
     var isDarkModeEnabled: Bool = false
     
     var recipes: [Recipe] = []
+    var allRecipes: [Recipe] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.title = "Przepisy"
         
+        searchTextField.delegate = self
         table_view.delegate = self
         table_view.dataSource = self
         
@@ -55,6 +59,14 @@ class ViewController: UIViewController {
         }
         
         recipes = appDelegate.dataManager.fetch(Recipe.fetchRequest())
+        allRecipes = recipes
+        
+        if let searchText = searchTextField.text, !searchText.isEmpty {
+            textField(searchTextField, shouldChangeCharactersIn: NSRange(location: 0, length: searchText.count), replacementString: searchText)
+        } else {
+            updateView()
+        }
+        
         updateView()
     }
     
@@ -119,6 +131,36 @@ class ViewController: UIViewController {
         UserDefaults().setValue(isDarkModeEnabled, forKey: "darkMode")
     }
 }
+
+extension ViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        // Jeśli użytkownik wypełni pole tekstowe, pokaż przefiltrowane przepisy
+        guard let currentText = textField.text else {
+            return true
+        }
+        
+        let updatedText = (currentText as NSString).replacingCharacters(in: range, with: string)
+        
+        if updatedText.isEmpty {
+            recipes = allRecipes
+        } else {
+            recipes = allRecipes.filter { $0.name?.localizedCaseInsensitiveContains(updatedText) ?? false }
+        }
+        updateView()
+        
+        return true
+    }
+    
+    func textFieldShouldClear(_ textField: UITextField) -> Bool {
+        // Jeśli użytkownik wyczyści pole tekstowe, pokaż wszystkie przepisy
+        recipes = allRecipes
+        updateView()
+        
+        return true
+    }
+
+}
+
 
 extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
