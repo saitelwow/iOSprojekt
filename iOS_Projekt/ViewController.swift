@@ -12,6 +12,7 @@ import CoreData
 class ViewController: UIViewController {
     
     @IBOutlet var table_view: UITableView!
+    @IBOutlet var counterItem: UIBarButtonItem!
     
     let motionManager = CMMotionManager()
     let shakeThreshold: Double = 1.5
@@ -25,6 +26,7 @@ class ViewController: UIViewController {
         
         table_view.delegate = self
         table_view.dataSource = self
+        counterItem.title = ""
         
         motionManager.accelerometerUpdateInterval = 0.1 // Update interval in seconds
         
@@ -90,6 +92,7 @@ class ViewController: UIViewController {
     
     func updateView() {
         table_view.reloadData()
+        counterItem.title = "Przepisów: \(recipes.count)"
     }
     
     @IBAction func didTapAdd() {
