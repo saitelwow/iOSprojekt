@@ -13,26 +13,26 @@ class ViewController: UIViewController {
     
     @IBOutlet var table_view: UITableView!
 
-    @IBOutlet var searchTextField: UITextField!
+//    @IBOutlet var searchTextField: UITextField!
     
     let motionManager = CMMotionManager()
     let shakeThreshold: Double = 1.5
     
-    var isDarkModeEnabled: Bool = false
+//    var isDarkModeEnabled: Bool = false
     
     var recipes: [Recipe] = []
-    var allRecipes: [Recipe] = []
+//    var allRecipes: [Recipe] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.title = "Przepisy"
         
-        searchTextField.delegate = self
+//        searchTextField.delegate = self
         table_view.delegate = self
         table_view.dataSource = self
         
-        setDarkMode(isDarkMode: UserDefaults().bool(forKey: "darkMode"))
+//        setDarkMode(isDarkMode: UserDefaults().bool(forKey: "darkMode"))
         
         motionManager.accelerometerUpdateInterval = 0.1 // Update interval in seconds
         
@@ -59,13 +59,13 @@ class ViewController: UIViewController {
         }
         
         recipes = appDelegate.dataManager.fetch(Recipe.fetchRequest())
-        allRecipes = recipes
+//        allRecipes = recipes
         
-        if let searchText = searchTextField.text, !searchText.isEmpty {
-            textField(searchTextField, shouldChangeCharactersIn: NSRange(location: 0, length: searchText.count), replacementString: searchText)
-        } else {
-            updateView()
-        }
+//        if let searchText = searchTextField.text, !searchText.isEmpty {
+//            textField(searchTextField, shouldChangeCharactersIn: NSRange(location: 0, length: searchText.count), replacementString: searchText)
+//        } else {
+//            updateView()
+//        }
         
         updateView()
     }
@@ -119,47 +119,47 @@ class ViewController: UIViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
     
-    @IBAction func toggleMode(_ sender: Any) {
-        setDarkMode(isDarkMode: !isDarkModeEnabled)
-    }
-    
-    func setDarkMode(isDarkMode: Bool) {
-        print("darkMode: \(isDarkMode)")
-        let window = UIApplication.shared.windows[0]
-        isDarkModeEnabled = isDarkMode
-        window.overrideUserInterfaceStyle = isDarkMode ? .dark : .light
-        UserDefaults().setValue(isDarkModeEnabled, forKey: "darkMode")
-    }
+//    @IBAction func toggleMode(_ sender: Any) {
+//        setDarkMode(isDarkMode: !isDarkModeEnabled)
+//    }
+//
+//    func setDarkMode(isDarkMode: Bool) {
+//        print("darkMode: \(isDarkMode)")
+//        let window = UIApplication.shared.windows[0]
+//        isDarkModeEnabled = isDarkMode
+//        window.overrideUserInterfaceStyle = isDarkMode ? .dark : .light
+//        UserDefaults().setValue(isDarkModeEnabled, forKey: "darkMode")
+//    }
 }
 
-extension ViewController: UITextFieldDelegate {
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        // Jeśli użytkownik wypełni pole tekstowe, pokaż przefiltrowane przepisy
-        guard let currentText = textField.text else {
-            return true
-        }
-        
-        let updatedText = (currentText as NSString).replacingCharacters(in: range, with: string)
-        
-        if updatedText.isEmpty {
-            recipes = allRecipes
-        } else {
-            recipes = allRecipes.filter { $0.name?.localizedCaseInsensitiveContains(updatedText) ?? false }
-        }
-        updateView()
-        
-        return true
-    }
-    
-    func textFieldShouldClear(_ textField: UITextField) -> Bool {
-        // Jeśli użytkownik wyczyści pole tekstowe, pokaż wszystkie przepisy
-        recipes = allRecipes
-        updateView()
-        
-        return true
-    }
-
-}
+//extension ViewController: UITextFieldDelegate {
+//    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+//        // Jeśli użytkownik wypełni pole tekstowe, pokaż przefiltrowane przepisy
+//        guard let currentText = textField.text else {
+//            return true
+//        }
+//
+//        let updatedText = (currentText as NSString).replacingCharacters(in: range, with: string)
+//
+//        if updatedText.isEmpty {
+//            recipes = allRecipes
+//        } else {
+//            recipes = allRecipes.filter { $0.name?.localizedCaseInsensitiveContains(updatedText) ?? false }
+//        }
+//        updateView()
+//
+//        return true
+//    }
+//
+//    func textFieldShouldClear(_ textField: UITextField) -> Bool {
+//        // Jeśli użytkownik wyczyści pole tekstowe, pokaż wszystkie przepisy
+//        recipes = allRecipes
+//        updateView()
+//
+//        return true
+//    }
+//
+//}
 
 
 extension ViewController: UITableViewDelegate {
