@@ -27,17 +27,5 @@ class TaskViewController: UIViewController {
         if let img = recipe.image {
             imageView.image = UIImage(data: img)
         }
-        
-//        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Usuń", style: .done, target: self, action: #selector(DeleteTask))
     }
-    
-//    @objc func DeleteTask() {
-//        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-//            return
-//        }
-//        appDelegate.dataManager.delete(recipe)
-//
-//        update?()
-//        navigationController?.popViewController(animated: true)
-//    }
 }
